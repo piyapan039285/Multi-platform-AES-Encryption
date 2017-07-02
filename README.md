@@ -42,11 +42,13 @@ string decryptedText = AES.Encryption.decryptData(encryptedText, key);
 * unlimited strength file - Java 8 : http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html
 
 ```java
-string text = "  Hello World  ";
-string key = "44 52 d7 16 87 b6 bc 2c 93 89 c3 34 9f dc 17 fb 3d fb ba 62 24 af fb 76 76 e1 33 79 26 cd d6 02";
+String text = "  Hello World  ";
+String key = "44 52 d7 16 87 b6 bc 2c 93 89 c3 34 9f dc 17 fb 3d fb ba 62 24 af fb 76 76 e1 33 79 26 cd d6 02";
 
-string encryptedText = AES.Encryption.encryptData(text, key);
-string decryptedText = AES.Encryption.decryptData(encryptedText, key);
+String encryptedText = Encryption.encryptData(text, key);
+String decryptedText = Encryption.decryptData(encryptedText, key);
+
+assertEquals(decryptedText, text);
 ```
 
 
