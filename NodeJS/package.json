@@ -1,0 +1,20 @@
+{
+  "name": "encryptor",
+  "version": "1.0.0",
+  "description": "ready-to-use encryption library",
+  "author": "piyapan039285",
+
+  "devDependencies": {
+      "nodeunit":"^0.11.1"
+  },
+
+  "dependencies": {
+  },
+  
+  "scripts": {
+    "prestart": "",
+    "start": "",
+    "poststart": "",
+    "test": "nodeunit unitTest.js"
+  }
+}
