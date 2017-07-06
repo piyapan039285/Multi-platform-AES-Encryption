@@ -2,7 +2,7 @@
 Ready-To-Use AES-256 bit encryption library. Encryption method is AES with CBC mode and PCKS7 padding (aka. PCKS5).
 
 ## Coding Language Support 
-Right now library written in C#, Java (Android) and NodeJS. Swift will coming soon.
+Right now library written in C#, Java (Android) Objective-C, Swift 3, and NodeJS.
 
 ## Encryption Input
 2 parameters
@@ -65,7 +65,7 @@ NSString *decryptedText = [Encryptor decryptedData:encryptedText WithHexKey:key]
 * Class ```Swift\Swift3.1\Swift3.1\Encryption.swift```
 * Unit Test ```Swift\Swift3.1\EncryptionTests\EncryptionTests.swift```
 
-**Important** : To use in your project, you have to add ```Security.framework``` library and add ```#import <CommonCrypto/CommonCryptor.h>``` to the bridging header. More info : http://www.learnswiftonline.com/getting-started/adding-swift-bridging-header/ 
+**Important** : To use in your project, you have to add ```Security.framework``` library and add ```#import <CommonCrypto/CommonCryptor.h>``` to the bridging header (More info : http://www.learnswiftonline.com/getting-started/adding-swift-bridging-header/) 
 
 ![](/Swift/images/bridging_header.png)
 ![](/Swift/images/security_framework.png)
