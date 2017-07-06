@@ -16,6 +16,9 @@ module.exports =
             s += alphabet[r];
         }
 
+        //prevent null block.
+        s = s.replace(new RegExp("00", 'g'), "11");
+
         return s;
     },
 
@@ -23,7 +26,17 @@ module.exports =
     {
         hexString = hexString.trim();
         hexString = hexString.replace(new RegExp(' ', 'g'), '');
-        
+        hexString = hexString.toLowerCase();
+
+        var i;
+        for(i=0;i<hexString.length;i++)
+        {
+            if("abcdef0123456789".indexOf(hexString[i]) == -1)
+            {
+                throw new Error('Invalid encryption hex data');
+            }
+        }
+
         var buffer = Buffer.from(hexString, 'hex');;
         return buffer;
     },
@@ -63,6 +76,11 @@ module.exports =
         var key = this._dataFromHexString(hexKey);
         var iv = this._dataFromHexString(hexIV);
 
+        if(key.length != 32)
+        {               
+            throw new Error('key length is not 256 bit (64 hex characters)');
+        }
+
         var cipher = crypto.createCipheriv('aes256', key, iv);
         //var encryptedBufferData = Buffer.concat([cipher.update(data), cipher.final()]); 
         var encryptedData = cipher.update(data, 'binary', 'hex')  + cipher.final('hex');
@@ -75,6 +93,11 @@ module.exports =
         var data = this._dataFromHexString(hexString);
         var key = this._dataFromHexString(hexKey);
         var iv = this._dataFromHexString(hexIV);
+
+        if(key.length != 32)
+        {               
+            throw new Error('key length is not 256 bit (64 hex characters)');
+        }
 
         var decipher = crypto.createDecipheriv('aes256', key, iv);
         //var encryptedBufferData = Buffer.concat([cipher.update(data), cipher.final()]); 
