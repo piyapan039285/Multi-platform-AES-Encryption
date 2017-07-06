@@ -1,15 +1,22 @@
 # Multi-platform-AES-Encryption
 Ready-To-Use AES-256 bit encryption library. Encryption method is AES with CBC mode (random IV in each encryption) and PCKS7 padding (aka. PCKS5).
 
-## Coding Language Support 
-Right now library written in C#, Java (Android) Objective-C, Swift 3, and NodeJS.
+## Language Supported
+* C#
+* Java (Android)
+* Objective-C
+* Swift 3
+* NodeJS
 
 ## Input
 * **plain_text** (string) : string MUST be able to be converted into UTF-8 encoding.
-* **key** (string) : string in hexadecimal format (64 characters length). Space in key string is allowed.
+* **key** (string) : string in hexadecimal format (64 characters length). Space in string is allowed.
 
 ## Output
 * **encrypted_string** (string) : string in hexadecimal format.
+
+<br/>
+<br/>
 
 # Sample Usage
 ## C#
@@ -56,9 +63,11 @@ NSString *decryptedText = [Encryptor decryptedData:encryptedText WithHexKey:key]
 * Class ```Swift\Swift3.1\Swift3.1\Encryption.swift```
 * Unit Test ```Swift\Swift3.1\EncryptionTests\EncryptionTests.swift```
 
-**Important** : To use in your project, you have to add ```Security.framework``` library and add ```#import <CommonCrypto/CommonCryptor.h>``` to the bridging header (More info : http://www.learnswiftonline.com/getting-started/adding-swift-bridging-header/) 
+**Important** : To use in your project, you have to add ```Security.framework``` library and add ```#import <CommonCrypto/CommonCryptor.h>``` to the bridging header as shown in image below (More info : http://www.learnswiftonline.com/getting-started/adding-swift-bridging-header/) 
 
 ![](/Swift/images/bridging_header.png)
+<br/>
+<br/>
 ![](/Swift/images/security_framework.png)
 
 ```swift
