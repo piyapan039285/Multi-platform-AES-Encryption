@@ -25,7 +25,10 @@ namespace AES
 
                 s += alphabet[r];
             }
-    
+
+            //prevent NULL byte block.
+            s = s.Replace("00", "11");
+
             return s;
         }
 
@@ -83,6 +86,11 @@ namespace AES
             byte[] key = dataFromHexString(hexKey);
             byte[] iv = dataFromHexString(hexIV);
 
+            if (key.Length != 32)
+            {
+                throw new Exception("key length is not 256 bit (64 hex characters)");
+            }
+
             var aes = Aes.Create();
             aes.Mode = CipherMode.CBC;
             aes.Padding = PaddingMode.PKCS7;
@@ -104,6 +112,11 @@ namespace AES
             byte[] data = dataFromHexString(hexString);
             byte[] key = dataFromHexString(hexKey);
             byte[] iv = dataFromHexString(hexIV);
+
+            if (key.Length != 32)
+            {
+                throw new Exception("key length is not 256 bit (64 hex characters)");
+            }
 
             var aes = Aes.Create();
             aes.Mode = CipherMode.CBC;
