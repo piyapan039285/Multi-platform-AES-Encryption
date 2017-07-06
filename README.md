@@ -2,7 +2,7 @@
 Ready-To-Use AES-256 bit encryption library. Encryption method is AES with CBC mode and PCKS7 padding (aka. PCKS5).
 
 ## Coding Language Support 
-Right now library written in C#, Java (Android) and NodeJS. Objective-C and Swift will coming soon.
+Right now library written in C#, Java (Android) Objective-C, Swift 3, and NodeJS.
 
 ## Encryption Input
 2 parameters
@@ -47,10 +47,36 @@ String key = "44 52 d7 16 87 b6 bc 2c 93 89 c3 34 9f dc 17 fb 3d fb ba 62 24 af 
 
 String encryptedText = Encryption.encryptData(text, key);
 String decryptedText = Encryption.decryptData(encryptedText, key);
-
-assertEquals(decryptedText, text);
 ```
 
+## Objective C
+* Class ```\ObjectiveC\ObjectiveC\Encryptor.m```, ```\ObjectiveC\ObjectiveC\Encryptor.h```
+* Unit Test ```\ObjectiveC\EncryptionTests\EncryptionTests.m```
+
+```objectivec
+NSString *text = @"  Hello World  ";
+NSString *key = @"44 52 d7 16 87 b6 bc 2c 93 89 c3 34 9f dc 17 fb 3d fb ba 62 24 af fb 76 76 e1 33 79 26 cd d6 02";
+
+NSString *encryptedText = [Encryptor encryptedData:text WithHexKey:key];
+NSString *decryptedText = [Encryptor decryptedData:encryptedText WithHexKey:key];
+```
+
+## Swift 3
+* Class ```Swift\Swift3.1\Swift3.1\Encryption.swift```
+* Unit Test ```Swift\Swift3.1\EncryptionTests\EncryptionTests.swift```
+
+**Important** : To use in your project, you have to add ```Security.framework``` library and add ```#import <CommonCrypto/CommonCryptor.h>``` to the bridging header (More info : http://www.learnswiftonline.com/getting-started/adding-swift-bridging-header/) 
+
+![](/Swift/images/bridging_header.png)
+![](/Swift/images/security_framework.png)
+
+```swift
+let text:String = "  Hello World  ";
+let key:String = "44 52 d7 16 87 b6 bc 2c 93 89 c3 34 9f dc 17 fb 3d fb ba 62 24 af fb 76 76 e1 33 79 26 cd d6 02";
+
+let encryptedText:String? = Encryption.encryptData(plainText: text, hexKey: key)
+let decryptedText:String? = Encryption.decryptData(hexStr: encryptedText!, hexKey: key)
+```
 
 ## NodeJS
 * Module ```\NodeJS\encryption.js```
