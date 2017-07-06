@@ -4,21 +4,12 @@ Ready-To-Use AES-256 bit encryption library. Encryption method is AES with CBC m
 ## Coding Language Support 
 Right now library written in C#, Java (Android) Objective-C, Swift 3, and NodeJS.
 
-## Encryption Input
-2 parameters
+## Input
 * **plain_text** (string) : string MUST be able to be converted into UTF-8 encoding.
 * **key** (string) : string in hexadecimal format (64 characters length). Space in key string is allowed.
 
-## Encryption Output
+## Output
 * **encrypted_string** (string) : string in hexadecimal format.
-
-## Decryption Input
-2 parameters
-* **encrypted_string** (string) : string in hexadecimal format.
-* **key** (string) : string in hexadecimal format (64 characters length). Space in key string is allowed.
-
-## Decryption Output
-* **plain_text** (string).
 
 # Sample Usage
 ## C#
