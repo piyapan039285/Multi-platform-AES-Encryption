@@ -30,6 +30,9 @@ public class Encryption
             s += alphabet.charAt(r);
         }
 
+        //prevent null block.
+        s = s.replaceAll("00", "11");
+
         return s;
     }
 
@@ -42,20 +45,32 @@ public class Encryption
         return hexString;
     }
 
-    private static byte[] dataFromHexString(String hexString)
+    private static byte[] dataFromHexString(String hexString) throws Exception
     {
         hexString = hexString.trim();
         hexString = hexString.replaceAll("[ ]", "");
+        hexString = hexString.toLowerCase();
+
+        String validHexChar = "abcdef0123456789";
 
         int len = hexString.length();
         byte[] data = new byte[len / 2];
-        for (int i = 0; i < len; i += 2) {
-            data[i / 2] = (byte) ((Character.digit(hexString.charAt(i), 16) << 4) + Character.digit(hexString.charAt(i+1), 16));
+        for (int i = 0; i < len; i += 2)
+        {
+            char c1 = hexString.charAt(i);
+            char c2 = hexString.charAt(i+1);
+
+            if(!validHexChar.contains(""+c1) || !validHexChar.contains((""+c2)))
+            {
+                throw new Exception("Invalid encryption hex data");
+            }
+
+            data[i / 2] = (byte) ((Character.digit(c1, 16) << 4) + Character.digit(c2, 16));
         }
         return data;
     }
 
-    public static String encryptData(String text, String hexKey) throws GeneralSecurityException
+    public static String encryptData(String text, String hexKey) throws Exception
     {
         //generate random IV (16 bytes)
         String hexIV = generateRandomHex(16);
@@ -71,7 +86,7 @@ public class Encryption
         return encryptedHexStr;
     }
 
-    public static String decryptData(String hexStr, String hexKey) throws GeneralSecurityException
+    public static String decryptData(String hexStr, String hexKey) throws Exception
     {
         String hexIV = hexStr.substring(0, 32);
         String encryptedStr = hexStr.substring(32);
@@ -84,8 +99,31 @@ public class Encryption
         return plainText;
     }
 
-    private static String __encryptData(String hexString, String hexKey, String hexIV) throws GeneralSecurityException
+    private static void checkKey(String hexKey) throws Exception
     {
+        hexKey = hexKey.trim();
+        hexKey = hexKey.replaceAll("[ ]", "");
+        hexKey = hexKey.toLowerCase();
+
+        if(hexKey.length() != 64)
+        {
+            throw new Exception("key length is not 256 bit (64 hex characters)");
+        }
+
+        int i;
+        for(i=0;i<hexKey.length();i+=2)
+        {
+            if(hexKey.charAt(i) == '0' && hexKey.charAt(i+1) == '0')
+            {
+                throw new Exception("key cannot contain zero byte block");
+            }
+        }
+    }
+
+    private static String __encryptData(String hexString, String hexKey, String hexIV) throws Exception
+    {
+        checkKey(hexKey);
+
         byte[] data = dataFromHexString(hexString);
         byte[] keyBytes = dataFromHexString(hexKey);
         byte[] iv = dataFromHexString(hexIV);
@@ -102,8 +140,10 @@ public class Encryption
         return encryptHexData;
     }
 
-    private static String __decryptData(String hexString, String hexKey, String hexIV) throws GeneralSecurityException
+    private static String __decryptData(String hexString, String hexKey, String hexIV) throws Exception
     {
+        checkKey(hexKey);
+
         byte[] data = dataFromHexString(hexString);
         byte[] keyBytes = dataFromHexString(hexKey);
         byte[] iv = dataFromHexString(hexIV);

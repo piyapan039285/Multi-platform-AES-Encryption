@@ -80,16 +80,34 @@ namespace AES
             return plainText;
         }
 
-        public static string __encryptData(string hexString, string hexKey, string hexIV)
+        private static void checkKey(string hexKey)
         {
-            byte[] data = dataFromHexString(hexString);
-            byte[] key = dataFromHexString(hexKey);
-            byte[] iv = dataFromHexString(hexIV);
+            hexKey = hexKey.Trim();
+            hexKey = hexKey.Replace(" ", "");
+            hexKey = hexKey.ToLower();
 
-            if (key.Length != 32)
+            if(hexKey.Length != 64)
             {
                 throw new Exception("key length is not 256 bit (64 hex characters)");
             }
+
+            int i;
+            for(i=0;i<hexKey.Length;i+=2)
+            {
+                if(hexKey[i] == '0' && hexKey[i+1] == '0')
+                {
+                    throw new Exception("key cannot contain zero byte block");
+                }
+            }
+        }
+
+        public static string __encryptData(string hexString, string hexKey, string hexIV)
+        {
+            checkKey(hexKey);
+
+            byte[] data = dataFromHexString(hexString);
+            byte[] key = dataFromHexString(hexKey);
+            byte[] iv = dataFromHexString(hexIV);
 
             var aes = Aes.Create();
             aes.Mode = CipherMode.CBC;
@@ -109,15 +127,12 @@ namespace AES
 
         private static string __decryptData(string hexString, string hexKey, string hexIV)
         {
+            checkKey(hexKey);
+
             byte[] data = dataFromHexString(hexString);
             byte[] key = dataFromHexString(hexKey);
             byte[] iv = dataFromHexString(hexIV);
-
-            if (key.Length != 32)
-            {
-                throw new Exception("key length is not 256 bit (64 hex characters)");
-            }
-
+            
             var aes = Aes.Create();
             aes.Mode = CipherMode.CBC;
             aes.Padding = PaddingMode.PKCS7;

@@ -70,4 +70,62 @@ public class AESUnitTest
 
         assertEquals(decryptedText, text);
     }
+
+    @Test
+    public void invalidKey() throws Exception
+    {
+        String text = "  Hello World  ";
+        String key = "44 52 d7 87 b6 bc 2c 93 89 c3 34 9f dc 17 fb 3d fb ba 62 24 af fb 76 76 e1 33 79 26 cd d6 02";
+
+        try
+        {
+            String encryptedText = Encryption.encryptData(text, key);
+
+            throw new Exception("Exception thrown expected because key length is invalid");
+        }
+        catch (Exception E)
+        {
+            assertEquals(E.getMessage(), "key length is not 256 bit (64 hex characters)");
+        }
+
+        try
+        {
+            String decryptedText = Encryption.decryptData("249ec2837616f746f0055f3cc43adbddB403B528EBDF9AF29126BD70D85C904BF3F25748FB22898E1E837FE9D67133ED6DF2F70882CF2EF5060A1E87250AF92762479E4858159AADFC512052DA00630339663ED7DC359A9B02EC40B67E0E12F3E3CA6723D2E18CA1F239CDF0486F0B7D28C2A730C3DA4A0342A2D1C02D833839BDF6819610A2FBC34CFA0AB4C64A9352", key);
+
+            throw new Exception("Exception thrown expected because key length is invalid");
+        }
+        catch (Exception E)
+        {
+            assertEquals(E.getMessage(), "key length is not 256 bit (64 hex characters)");
+        }
+    }
+
+    @Test
+    public void zeroByteKey() throws Exception
+    {
+        String text = "  Hello World  ";
+        String key = "44 00 d7 ee 87 b6 bc 2c 93 89 c3 34 9f dc 17 fb 3d fb ba 62 24 af fb 76 76 e1 33 79 26 cd d6 02";
+
+        try
+        {
+            String encryptedText = Encryption.encryptData(text, key);
+
+            throw new Exception("Exception thrown expected because key has zero byte");
+        }
+        catch (Exception E)
+        {
+            assertEquals(E.getMessage(), "key cannot contain zero byte block");
+        }
+
+        try
+        {
+            String decryptedText = Encryption.decryptData("249ec2837616f746f0055f3cc43adbddB403B528EBDF9AF29126BD70D85C904BF3F25748FB22898E1E837FE9D67133ED6DF2F70882CF2EF5060A1E87250AF92762479E4858159AADFC512052DA00630339663ED7DC359A9B02EC40B67E0E12F3E3CA6723D2E18CA1F239CDF0486F0B7D28C2A730C3DA4A0342A2D1C02D833839BDF6819610A2FBC34CFA0AB4C64A9352", key);
+
+            throw new Exception("Exception thrown expected because key has zero byte");
+        }
+        catch (Exception E)
+        {
+            assertEquals(E.getMessage(), "key cannot contain zero byte block");
+        }
+    }
 }

@@ -70,16 +70,34 @@ module.exports =
         return plainText;
     },
 
+    '_checkKey': function(hexKey)
+    {
+        hexKey = hexKey.trim();
+        hexKey = hexKey.replace(new RegExp(' ', 'g'), '');
+        hexKey = hexKey.toLowerCase();
+
+        if(hexKey.length != 64)
+        {
+            throw new Error("key length is not 256 bit (64 hex characters)");
+        }
+
+        var i;
+        for(i=0;i<hexKey.length;i+=2)
+        {
+            if(hexKey[i] == '0' && hexKey[i+1] == '0')
+            {
+                throw new Error("key cannot contain zero byte block");
+            }
+        }
+    },
+
     '_encryptData': function(hexString, hexKey, hexIV)
     {
+        this._checkKey(hexKey);
+
         var data = this._dataFromHexString(hexString);
         var key = this._dataFromHexString(hexKey);
         var iv = this._dataFromHexString(hexIV);
-
-        if(key.length != 32)
-        {               
-            throw new Error('key length is not 256 bit (64 hex characters)');
-        }
 
         var cipher = crypto.createCipheriv('aes256', key, iv);
         //var encryptedBufferData = Buffer.concat([cipher.update(data), cipher.final()]); 
@@ -90,14 +108,11 @@ module.exports =
 
     '_decryptData': function(hexString, hexKey, hexIV)
     {
+        this._checkKey(hexKey);
+
         var data = this._dataFromHexString(hexString);
         var key = this._dataFromHexString(hexKey);
         var iv = this._dataFromHexString(hexIV);
-
-        if(key.length != 32)
-        {               
-            throw new Error('key length is not 256 bit (64 hex characters)');
-        }
 
         var decipher = crypto.createDecipheriv('aes256', key, iv);
         //var encryptedBufferData = Buffer.concat([cipher.update(data), cipher.final()]); 
