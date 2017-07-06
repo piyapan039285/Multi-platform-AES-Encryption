@@ -1,24 +1,24 @@
 # Multi-platform-AES-Encryption
-Ready-To-Use AES-256 bit encryption library. Encryption method is AES with CBC mode and PCKS7 padding (aka. PCKS5).
+Ready-To-Use AES-256 bit encryption library. Encryption method is AES with CBC mode (random IV in each encryption) and PCKS7 padding (aka. PCKS5).
 
 ## Coding Language Support 
 Right now library written in C#, Java (Android) Objective-C, Swift 3, and NodeJS.
 
 ## Encryption Input
 2 parameters
-* plain text string (string MUST be able to be converted into UTF-8 encoding).
-* key string in hexadecimal format (64 characters length). Space in key string is allowed.
+* **plain_text** (string) : string MUST be able to be converted into UTF-8 encoding.
+* **key** (string) : string in hexadecimal format (64 characters length). Space in key string is allowed.
 
 ## Encryption Output
-encrypted string in hexadecimal format.
+* **encrypted_string** (string) : string in hexadecimal format.
 
 ## Decryption Input
 2 parameters
-* encrypted string in hexadecimal format.
-* key string in hexadecimal format (64 characters length). Space in key string is allowed.
+* **encrypted_string** (string) : string in hexadecimal format.
+* **key** (string) : string in hexadecimal format (64 characters length). Space in key string is allowed.
 
 ## Decryption Output
-plaintext in UTF-8 encoding.
+* **plain_text** (string).
 
 # Sample Usage
 ## C#
