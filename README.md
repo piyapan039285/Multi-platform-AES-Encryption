@@ -7,7 +7,7 @@ Right now library written in C#, Java (Android) Objective-C, Swift 3, and NodeJS
 ## Encryption Input
 2 parameters
 * plain text string (string MUST be able to be converted into UTF-8 encoding).
-* key string in hexadecimal format (64 characters length).
+* key string in hexadecimal format (64 characters length). Space in key string is allowed.
 
 ## Encryption Output
 encrypted string in hexadecimal format.
@@ -15,7 +15,7 @@ encrypted string in hexadecimal format.
 ## Decryption Input
 2 parameters
 * encrypted string in hexadecimal format.
-* key string in hexadecimal format (64 characters length).
+* key string in hexadecimal format (64 characters length). Space in key string is allowed.
 
 ## Decryption Output
 plaintext in UTF-8 encoding.
