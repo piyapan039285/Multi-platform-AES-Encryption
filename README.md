@@ -2,7 +2,7 @@
 Ready-To-Use AES-256 bit encryption library. Encryption method is AES with CBC mode and PCKS7 padding (aka. PCKS5).
 
 ## Coding Language Support 
-Right now library written in C#, Java (Android) and NodeJS. Objective-C and Swift will coming soon.
+Right now library written in C#, Java (Android) and NodeJS. Swift will coming soon.
 
 ## Encryption Input
 2 parameters
@@ -47,10 +47,19 @@ String key = "44 52 d7 16 87 b6 bc 2c 93 89 c3 34 9f dc 17 fb 3d fb ba 62 24 af 
 
 String encryptedText = Encryption.encryptData(text, key);
 String decryptedText = Encryption.decryptData(encryptedText, key);
-
-assertEquals(decryptedText, text);
 ```
 
+## Objective C
+* Class ```\ObjectiveC\ObjectiveC\Encryptor.m```, ```\ObjectiveC\ObjectiveC\Encryptor.h```
+* Unit Test ```\ObjectiveC\EncryptionTests\EncryptionTests.m```
+
+```objectivec
+NSString *text = @"  Hello World  ";
+NSString *key = @"44 52 d7 16 87 b6 bc 2c 93 89 c3 34 9f dc 17 fb 3d fb ba 62 24 af fb 76 76 e1 33 79 26 cd d6 02";
+
+NSString *encryptedText = [Encryptor encryptedData:text WithHexKey:key];
+NSString *decryptedText = [Encryptor decryptedData:encryptedText WithHexKey:key];
+```
 
 ## NodeJS
 * Module ```\NodeJS\encryption.js```
