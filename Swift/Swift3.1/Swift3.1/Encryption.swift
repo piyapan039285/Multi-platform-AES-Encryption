@@ -20,7 +20,7 @@ class Encryption: NSObject
         let letters : NSString = "abcdef0123456789"
         let len = UInt32(letters.length)
         
-        var randomString = ""
+        var randomString:String = ""
         
         for _ in 0 ..< stringLength
         {
@@ -29,12 +29,16 @@ class Encryption: NSObject
             randomString += NSString(characters: &nextChar, length: 1) as String
         }
         
+        //prevent null block.
+        randomString = randomString.replacingOccurrences(of: "00", with: "11")
+        
         return randomString
     }
     
-    class func dataFromHexString(hexString: String) throws -> Data
+    private class func dataFromHexString(hexString: String) throws -> Data
     {
-        var hexString = hexString.replacingOccurrences(of: " ", with: "")
+        var hexString = hexString.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        hexString = hexString.replacingOccurrences(of: " ", with: "")
         hexString = hexString.lowercased();
         
         var data = Data(capacity: hexString.characters.count / 2)
@@ -49,7 +53,7 @@ class Encryption: NSObject
             }
         }
         
-        let regex = try! NSRegularExpression(pattern: "[0-9a-f]{2}", options: .caseInsensitive)
+        let regex = try NSRegularExpression(pattern: "[0-9a-f]{2}", options: .caseInsensitive)
         
         regex.enumerateMatches(in: hexString, range: NSMakeRange(0, hexString.utf16.count))
         { match, flags, stop in
@@ -61,14 +65,14 @@ class Encryption: NSObject
         return data
     }
     
-    class func dataToHexString(data: Data) -> String
+    private class func dataToHexString(data: Data) -> String
     {
         let hexString:String = data.map { String(format: "%02x", $0) }.joined(separator: "")
         
         return hexString;
     }
     
-    class func encryptData(plainText:String, hexKey:String) -> String?
+    class func encryptData(plainText:String, hexKey:String) throws -> String?
     {
         //generate random IV (16 bytes)
         let hexIV:String = generateRandomHex(bytelength: 16);
@@ -76,7 +80,7 @@ class Encryption: NSObject
         let data:Data = plainText.data(using: String.Encoding.utf8)!
         let hexStr:String = dataToHexString(data: data)
         
-        let cipherHexStr = try! __encryptData(hexStr: hexStr, hexKey: hexKey, hexIV: hexIV)
+        let cipherHexStr = try __encryptData(hexStr: hexStr, hexKey: hexKey, hexIV: hexIV)
         
         if (cipherHexStr != "")
         {
@@ -91,7 +95,7 @@ class Encryption: NSObject
         }
     }
     
-    class func decryptData(hexStr:String, hexKey:String) -> String?
+    class func decryptData(hexStr:String, hexKey:String) throws -> String?
     {
         //get IV from first 16 bytes (16 bytes = 32 hex characters)
         let index32th = hexStr.index(hexStr.startIndex, offsetBy: 32);
@@ -100,24 +104,47 @@ class Encryption: NSObject
         //get encryptedStr from 16th bytes to the end.
         let encryptedStr:String = hexStr.substring(from: index32th)
         
-        let decryptedStr:String = try! __decryptData(hexStr: encryptedStr, hexKey: hexKey, hexIV: hexIV)
-        let data:Data = try! dataFromHexString(hexString: decryptedStr)
+        let decryptedStr:String = try __decryptData(hexStr: encryptedStr, hexKey: hexKey, hexIV: hexIV)
+        let data:Data = try dataFromHexString(hexString: decryptedStr)
         
         let plainText:String? = String.init(data: data, encoding: String.Encoding.utf8)
         
         return plainText
     }
     
-    class func __encryptData(hexStr: String, hexKey:String, hexIV:String) throws -> String
+    private class func checkKey(hexString: String) throws
     {
-        let data:Data = try! dataFromHexString(hexString: hexStr);
-        let key:Data = try! dataFromHexString(hexString: hexKey);
-        let iv:Data = try! dataFromHexString(hexString: hexIV);
+        var hexString = hexString.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        hexString = hexString.replacingOccurrences(of: " ", with: "")
+        hexString = hexString.lowercased();
         
-        if(key.count != 32)
+        if(hexString.characters.count != 64)
         {
             throw EncryptionError.RuntimeError("key length is not 256 bit (64 hex characters)")
         }
+        
+        var i:Int = 0;
+        while(i < hexString.characters.count)
+        {
+            let indexI:String.Index = hexString.index(hexString.startIndex, offsetBy: i)
+            let indexI1:String.Index = hexString.index(hexString.startIndex, offsetBy: i+1)
+            
+            if(hexString[indexI] == "0" && hexString[indexI1] == "0")
+            {
+                throw EncryptionError.RuntimeError("key cannot contain zero byte block")
+            }
+            
+            i+=2;
+        }
+    }
+    
+    private class func __encryptData(hexStr: String, hexKey:String, hexIV:String) throws -> String
+    {
+        try checkKey(hexString: hexKey)
+        
+        let data:Data = try dataFromHexString(hexString: hexStr);
+        let key:Data = try dataFromHexString(hexString: hexKey);
+        let iv:Data = try dataFromHexString(hexString: hexIV);
         
         let cryptLength  = size_t(data.count + kCCBlockSizeAES128)
         var cryptData = Data(count:cryptLength)
@@ -155,16 +182,13 @@ class Encryption: NSObject
         return encryptHexString;
     }
     
-    class func __decryptData(hexStr: String, hexKey:String, hexIV:String) throws -> String
+    private class func __decryptData(hexStr: String, hexKey:String, hexIV:String) throws -> String
     {
-        let data:Data = try! dataFromHexString(hexString: hexStr);
-        let key:Data = try! dataFromHexString(hexString: hexKey);
-        let iv:Data = try! dataFromHexString(hexString: hexIV);
+        try checkKey(hexString: hexKey)
         
-        if(key.count != 32)
-        {
-            throw EncryptionError.RuntimeError("key length is not 256 bit (64 hex characters)")
-        }
+        let data:Data = try dataFromHexString(hexString: hexStr);
+        let key:Data = try dataFromHexString(hexString: hexKey);
+        let iv:Data = try dataFromHexString(hexString: hexIV);
         
         let cryptLength  = size_t(data.count + kCCBlockSizeAES128)
         var cryptData = Data(count:cryptLength)

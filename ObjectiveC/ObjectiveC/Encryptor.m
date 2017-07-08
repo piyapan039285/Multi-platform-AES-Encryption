@@ -23,11 +23,17 @@
         [s appendFormat:@"%C", c];
     }
     
-    return [NSString stringWithString:s];
+    NSString* hexStr = [NSString stringWithString:s];
+    
+    //prevent null block.
+    hexStr = [hexStr stringByReplacingOccurrencesOfString:@"00" withString:@"11"];
+    
+    return hexStr;
 }
 
 + (NSData *)dataFromHexString:(NSString *)string
 {
+    string = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     string = string.lowercaseString;
     string = [string stringByReplacingOccurrencesOfString:@" " withString:@""];
     
@@ -40,7 +46,7 @@
         char c = [string characterAtIndex:i++];
         if (c < '0' || (c > '9' && c < 'a') || c > 'f')
         {
-            [NSException raise:@"Invalid encryption hex data" format:@""];
+            [NSException raise:@"EncryptionError" format:@"Invalid encryption hex data"];
         }
         
         byte_chars[0] = c;
@@ -48,7 +54,7 @@
         c = [string characterAtIndex:i++];
         if (c < '0' || (c > '9' && c < 'a') || c > 'f')
         {
-            [NSException raise:@"Invalid encryption hex data" format:@""];
+            [NSException raise:@"EncryptionError" format:@"Invalid encryption hex data"];
         }
         byte_chars[1] = c;
         
@@ -60,8 +66,6 @@
 
 + (NSString *)dataTohexString:(NSData *)data
 {
-    /* Returns hexadecimal string of NSData. Empty string if data is empty.   */
-    
     const unsigned char *dataBuffer = (const unsigned char *)[data bytes];
     
     if (!dataBuffer)
@@ -130,11 +134,31 @@
     return plainText;
 }
 
-
 //private methods
++ (void) checkKey: (NSString *) hexString
+{
+    hexString = [hexString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    hexString = hexString.lowercaseString;
+    hexString = [hexString stringByReplacingOccurrencesOfString:@" " withString:@""];
+    
+    if([hexString length] != 64)
+    {
+        [NSException raise:@"EncryptionError" format:@"key length is not 256 bit (64 hex characters)"];
+    }
+    
+    for(int i=0;i<[hexString length];i+=2)
+    {
+        if([hexString characterAtIndex:i] == '0' && [hexString characterAtIndex:i+1] == '0')
+        {
+            [NSException raise:@"EncryptionError" format:@"key cannot contain zero byte block"];
+        }
+    }
+}
+
 + (NSString *)__encryptedData: (NSString*)hexStr WithHexKey:(NSString*)hexKey hexIV:(NSString *)hexIV
 {
     //Encryption will use AES, key size 256bit (32 bytes), iv size 128 bit (16 bytes), CBC Mode, PKCS7 Padding.
+    [Encryptor checkKey:hexKey];
     
     // Fetch key data and put into C string array padded with \0
     char *keyPtr;
@@ -174,6 +198,8 @@
 
 + (NSString *)__decryptedData:(NSString*)hexStr WithHexKey:(NSString*)hexKey hexIV:(NSString *)hexIV
 {
+    [Encryptor checkKey:hexKey];
+    
     // Fetch key data and put into C string array padded with \0
     char *keyPtr;
     [Encryptor fillDataArray:&keyPtr length:kCCKeySizeAES256+1 usingHexString:hexKey];
