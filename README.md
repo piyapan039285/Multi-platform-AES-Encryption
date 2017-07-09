@@ -1,5 +1,5 @@
 # Multi-platform-AES-Encryption
-Ready-To-Use AES-256 bit encryption library. Encryption method is AES with CBC mode (random IV in each encryption) and PCKS7 padding (aka. PCKS5).
+Ready-To-Use AES-256 bit encryption library. Encryption method is AES with CBC mode (random IV in each encryption) and PCKS7 padding (aka. PCKS5). [View Demo](https://firebasestorage.googleapis.com/v0/b/multi-platform-aes-encryption.appspot.com/o/demo.html?alt=media&token=f7ccb12a-acc7-4b86-b07f-bf099f6323d2)
 
 ## Language Supported
 * C#
@@ -25,8 +25,10 @@ Ready-To-Use AES-256 bit encryption library. Encryption method is AES with CBC m
 * Unit Test : ```\CSharp\AESUnitTest\UnitTest1.cs```
 
 <br/>
+
 **Example**
 <br/>
+
 ```csharp
 string text = "  Hello World  ";
 string key = "44 52 d7 16 87 b6 bc 2c 93 89 c3 34 9f dc 17 fb 3d fb ba 62 24 af fb 76 76 e1 33 79 26 cd d6 02";
@@ -44,8 +46,11 @@ string decryptedText = AES.Encryption.decryptData(encryptedText, key);
 * unlimited strength file - Java 8 : http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html
 
 <br/>
+
 **Example**
 <br/>
+
+
 ```java
 String text = "  Hello World  ";
 String key = "44 52 d7 16 87 b6 bc 2c 93 89 c3 34 9f dc 17 fb 3d fb ba 62 24 af fb 76 76 e1 33 79 26 cd d6 02";
@@ -59,8 +64,11 @@ String decryptedText = Encryption.decryptData(encryptedText, key);
 * Unit Test : ```\ObjectiveC\EncryptionTests\EncryptionTests.m```
 
 <br/>
+
 **Example**
 <br/>
+
+
 ```objectivec
 NSString *text = @"  Hello World  ";
 NSString *key = @"44 52 d7 16 87 b6 bc 2c 93 89 c3 34 9f dc 17 fb 3d fb ba 62 24 af fb 76 76 e1 33 79 26 cd d6 02";
@@ -81,8 +89,11 @@ NSString *decryptedText = [Encryptor decryptedData:encryptedText WithHexKey:key]
 ![](/Swift/images/security_framework.png)
 
 <br/>
+
 **Example**
 <br/>
+
+
 ```swift
 let text:String = "  Hello World  ";
 let key:String = "44 52 d7 16 87 b6 bc 2c 93 89 c3 34 9f dc 17 fb 3d fb ba 62 24 af fb 76 76 e1 33 79 26 cd d6 02";
@@ -96,8 +107,11 @@ let decryptedText:String? = Encryption.decryptData(hexStr: encryptedText!, hexKe
 * Unit Test : ```\NodeJS\unitTest.js```
 
 <br/>
+
 **Example**
 <br/>
+
+
 ```js
 var encryptor = require("./encryption");
 
@@ -114,8 +128,11 @@ It is implemented based on [forge](https://github.com/digitalbazaar/forge) API.
 * Unit Test :  ```javascript\unitTest.html```
 
 <br/>
+
 **Example**
 <br/>
+
+
 ```xml
 <html>
 <head>
