@@ -7,6 +7,7 @@ Ready-To-Use AES-256 bit encryption library. Encryption method is AES with CBC m
 * Objective-C
 * Swift 3
 * NodeJS
+* Javascript (Tested on Chrome 59, Firefox 54, IE 10-11)
 
 ## Input
 * **plain_text** (string) : string MUST be able to be converted into UTF-8 encoding.
@@ -20,9 +21,12 @@ Ready-To-Use AES-256 bit encryption library. Encryption method is AES with CBC m
 
 # Sample Usage
 ## C#
-* Class ```\CSharp\Encryption.cs```
-* Unit Test ```\CSharp\AESUnitTest\UnitTest1.cs```
+* Class : ```\CSharp\Encryption.cs```
+* Unit Test : ```\CSharp\AESUnitTest\UnitTest1.cs```
 
+<br/>
+**Example**
+<br/>
 ```csharp
 string text = "  Hello World  ";
 string key = "44 52 d7 16 87 b6 bc 2c 93 89 c3 34 9f dc 17 fb 3d fb ba 62 24 af fb 76 76 e1 33 79 26 cd d6 02";
@@ -39,6 +43,9 @@ string decryptedText = AES.Encryption.decryptData(encryptedText, key);
 * unlimited strength file - Java 7 : http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html
 * unlimited strength file - Java 8 : http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html
 
+<br/>
+**Example**
+<br/>
 ```java
 String text = "  Hello World  ";
 String key = "44 52 d7 16 87 b6 bc 2c 93 89 c3 34 9f dc 17 fb 3d fb ba 62 24 af fb 76 76 e1 33 79 26 cd d6 02";
@@ -48,9 +55,12 @@ String decryptedText = Encryption.decryptData(encryptedText, key);
 ```
 
 ## Objective C
-* Class ```\ObjectiveC\ObjectiveC\Encryptor.m```, ```\ObjectiveC\ObjectiveC\Encryptor.h```
-* Unit Test ```\ObjectiveC\EncryptionTests\EncryptionTests.m```
+* Class : ```\ObjectiveC\ObjectiveC\Encryptor.m```, ```\ObjectiveC\ObjectiveC\Encryptor.h```
+* Unit Test : ```\ObjectiveC\EncryptionTests\EncryptionTests.m```
 
+<br/>
+**Example**
+<br/>
 ```objectivec
 NSString *text = @"  Hello World  ";
 NSString *key = @"44 52 d7 16 87 b6 bc 2c 93 89 c3 34 9f dc 17 fb 3d fb ba 62 24 af fb 76 76 e1 33 79 26 cd d6 02";
@@ -60,8 +70,8 @@ NSString *decryptedText = [Encryptor decryptedData:encryptedText WithHexKey:key]
 ```
 
 ## Swift 3
-* Class ```Swift\Swift3.1\Swift3.1\Encryption.swift```
-* Unit Test ```Swift\Swift3.1\EncryptionTests\EncryptionTests.swift```
+* Class : ```Swift\Swift3.1\Swift3.1\Encryption.swift```
+* Unit Test : ```Swift\Swift3.1\EncryptionTests\EncryptionTests.swift```
 
 **Important** : To use in your project, you have to add ```Security.framework``` library and add ```#import <CommonCrypto/CommonCryptor.h>``` to the bridging header as shown in image below (More info : http://www.learnswiftonline.com/getting-started/adding-swift-bridging-header/) 
 
@@ -70,6 +80,9 @@ NSString *decryptedText = [Encryptor decryptedData:encryptedText WithHexKey:key]
 <br/>
 ![](/Swift/images/security_framework.png)
 
+<br/>
+**Example**
+<br/>
 ```swift
 let text:String = "  Hello World  ";
 let key:String = "44 52 d7 16 87 b6 bc 2c 93 89 c3 34 9f dc 17 fb 3d fb ba 62 24 af fb 76 76 e1 33 79 26 cd d6 02";
@@ -79,12 +92,45 @@ let decryptedText:String? = Encryption.decryptData(hexStr: encryptedText!, hexKe
 ```
 
 ## NodeJS
-* Module ```\NodeJS\encryption.js```
-* Unit Test ```\NodeJS\unitTest.js```
+* Module : ```\NodeJS\encryption.js```
+* Unit Test : ```\NodeJS\unitTest.js```
+
+<br/>
+**Example**
+<br/>
 ```js
+var encryptor = require("./encryption");
+
 var text = "  Hello World  ";
 var key = "44 52 d7 16 87 b6 bc 2c 93 89 c3 34 9f dc 17 fb 3d fb ba 62 24 af fb 76 76 e1 33 79 26 cd d6 02";
 
 var encryptedText = encryptor.encryptData(text, key);
 var decryptedText = encryptor.decryptData(encryptedText, key);
+```
+
+## Javascript
+It is implemented based on [forge](https://github.com/digitalbazaar/forge) API.
+* Javascript file : ```javascript\encryption.js```
+* Unit Test :  ```javascript\unitTest.html```
+
+<br/>
+**Example**
+<br/>
+```xml
+<html>
+<head>
+  <script src="forge.min.js"></script>
+  <script src="encryption.js"></script>
+  
+  <script>
+	var text = "  Hello World  ";
+	var key = "44 52 d7 16 87 b6 bc 2c 93 89 c3 34 9f dc 17 fb 3d fb ba 62 24 af fb 76 76 e1 33 79 26 cd d6 02";
+
+	var encryptedText = encryptor.encryptData(text, key);
+	var decryptedText = encryptor.decryptData(encryptedText, key);
+  </script>  
+</head>
+<body>
+</body>
+</html>
 ```

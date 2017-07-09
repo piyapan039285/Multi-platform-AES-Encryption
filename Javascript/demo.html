@@ -1,0 +1,105 @@
+<html>
+<head>
+    <style>
+        div 
+        {
+            margin-bottom: 10px;
+        }
+
+        textarea
+        {
+            vertical-align: top;
+            width:calc(100% - 20px);
+            min-height:6em;
+        }
+
+        input
+        {
+            width:calc(100% - 20px);
+        }
+
+    </style>
+
+    <script src="https://github.com/piyapan039285/Multi-platform-AES-Encryption/raw/master/javascript/forge.min.js"></script>
+    <script src="https://github.com/piyapan039285/Multi-platform-AES-Encryption/raw/master/javascript/encryption.js"></script>
+</head>
+<body>
+    <h1> Multi-platform AES Encryption Demo</h1>
+    <div>
+        For more information, visit <a href="https://github.com/piyapan039285/Multi-platform-AES-Encryption">github page</a>
+    </div>
+
+    <h2> Input </h2>
+    <textarea id="txtInput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">Hello World</textarea>
+
+    <br />
+
+    <div> 
+        Key :
+        <input id="txtKey" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" value="4452d71687b6bc2c9389c3349fdc17fb3dfbba6224affb7676e1337926cdd602"></input>
+    </div>
+
+    <div>
+        Mode :
+        <select id="selectMode">
+            <option value="enc">Encryption</option>
+            <option value="dec">Decryption</option>
+        </select>
+        &nbsp;&nbsp;
+        <button id="btnOK">encrypt</button>        
+    </div>
+    
+    <h2> Output </h2>
+    <textarea id="txtOutput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+
+    <script>
+        var selectMode = document.getElementById("selectMode");
+        var txtInput = document.getElementById("txtInput");
+        var txtKey = document.getElementById("txtKey");
+        var txtOutput = document.getElementById("txtOutput");
+        var btnOK = document.getElementById("btnOK");
+
+        var process = function()
+        {
+            var data = txtInput.value;
+            var key = txtKey.value;
+            var output = "";
+
+            var selectedMode = selectMode.value;
+
+            try
+            {
+                if(selectedMode == "enc")
+                    output = encryptor.encryptData(data, key);
+                else
+                    output = encryptor.decryptData(data, key);
+            }
+            catch(E)
+            {
+                output = "Error : " + E.message;
+                console.error(E);
+            }
+
+            txtOutput.value = output; 
+        };
+
+        selectMode.onchange = function()
+        {
+            var selectedMode = selectMode.value;
+
+            if(selectedMode == "enc")
+                btnOK.innerHTML = "encrypt";
+            else
+                btnOK.innerHTML = "decrypt";
+
+            process();
+        };
+
+        txtInput.addEventListener('input', process); 
+        txtKey.addEventListener('input', process);
+        btnOK.onclick = process;
+        
+        process();
+    </script>
+</body>
+</html>
