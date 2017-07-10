@@ -92,6 +92,8 @@
 
 + (NSString *)encryptedData: (NSString*)plainText WithHexKey:(NSString*)hexKey
 {
+    [Encryptor checkKey:hexKey];
+    
     //generate random IV (16 bytes)
     NSString* hexIV = [Encryptor generateRandomHex:16];
     
@@ -103,9 +105,13 @@
     
     if(cipherHexStr != nil)
     {
-        //concat IV with cipherHexStr.
+        NSString* hmacHexKey = [Encryptor generateRandomHex:16];
+        NSString* hmacHexStr = [Encryptor __computeHMACWithHexIV:hexIV cipherHexStr:cipherHexStr hexKey:hexKey hmacHexKey:hmacHexKey];
+
         NSMutableString *mutuableStr = [NSMutableString stringWithCapacity:([cipherHexStr length] + [hexIV length])];
         [mutuableStr appendString:hexIV];
+        [mutuableStr appendString:hmacHexKey];
+        [mutuableStr appendString:hmacHexStr];
         [mutuableStr appendString:cipherHexStr];
     
         NSString* encryptedHexStr = [NSString stringWithString:mutuableStr];
@@ -120,16 +126,28 @@
 
 + (NSString *)decryptedData: (NSString*)hexStr WithHexKey:(NSString*)hexKey
 {
-    //get IV from first 16 bytes (16 bytes = 32 hex characters)
-    NSString * hexIV = [hexStr substringToIndex:32];
+    [Encryptor checkKey:hexKey];
+    NSString *plainText = nil;
     
-    //get encryptedStr from 16th bytes to the end.
-    NSString * encryptedStr = [hexStr substringFromIndex:32];
-    
-    NSString * decryptedStr = [Encryptor __decryptedData:encryptedStr WithHexKey:hexKey hexIV:hexIV];
-    
-    NSData *bytesData = [Encryptor dataFromHexString:decryptedStr];
-    NSString *plainText = [[NSString alloc] initWithData:bytesData encoding:NSUTF8StringEncoding];
+    if(hexStr.length > 128)
+    {
+        NSString *hexIV = [hexStr substringToIndex:32];
+        NSString *hmacHexKey = [hexStr substringWithRange:NSMakeRange(32, 32)];
+        NSString *hmacHexStr = [hexStr substringWithRange:NSMakeRange(64, 64)];
+        NSString *ciperHexStr = [hexStr substringFromIndex:128];
+        
+        NSString *computedHmacHexStr = [Encryptor __computeHMACWithHexIV:hexIV cipherHexStr:ciperHexStr hexKey:hexKey hmacHexKey:hmacHexKey];
+        computedHmacHexStr = computedHmacHexStr.lowercaseString;
+        
+        hmacHexStr = hmacHexStr.lowercaseString;
+        if([hmacHexStr isEqualToString:computedHmacHexStr])
+        {
+            NSString * decryptedStr = [Encryptor __decryptedData:ciperHexStr WithHexKey:hexKey hexIV:hexIV];
+            
+            NSData *bytesData = [Encryptor dataFromHexString:decryptedStr];
+            plainText = [[NSString alloc] initWithData:bytesData encoding:NSUTF8StringEncoding];
+        }
+    }
     
     return plainText;
 }
@@ -155,10 +173,36 @@
     }
 }
 
++ (NSString*) __computeHMACWithHexIV: (NSString *) hexIV cipherHexStr:(NSString*) cipherHexStr hexKey:(NSString*) hexKey hmacHexKey:(NSString*) hmacHexKey
+{
+    hexKey = [hexKey stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    hexKey = hexKey.lowercaseString;
+    hexKey = [hexKey stringByReplacingOccurrencesOfString:@" " withString:@""];
+    
+    hmacHexKey = hmacHexKey.lowercaseString;
+    
+    NSMutableString *dataBuilder = [NSMutableString stringWithCapacity: hexIV.length + hexKey.length + cipherHexStr.length];
+    [dataBuilder appendString:hexIV];
+    [dataBuilder appendString:cipherHexStr];
+    [dataBuilder appendString:hexKey];
+    
+    NSString* hexString = [NSString stringWithString:dataBuilder];
+    hexString = hexString.lowercaseString;
+    
+    const char *cKey  = [hmacHexKey cStringUsingEncoding:NSUTF8StringEncoding];
+    const char *cData = [hexString cStringUsingEncoding:NSUTF8StringEncoding];
+    unsigned char cHMAC[CC_SHA256_DIGEST_LENGTH];
+    
+    CCHmac(kCCHmacAlgSHA256, cKey, strlen(cKey), cData, strlen(cData), cHMAC);
+    NSData *HMAC = [[NSData alloc] initWithBytes:cHMAC length:sizeof(cHMAC)];
+    
+    NSString* hmacHexStr = [Encryptor dataTohexString:HMAC];
+    return hmacHexStr;
+}
+
 + (NSString *)__encryptedData: (NSString*)hexStr WithHexKey:(NSString*)hexKey hexIV:(NSString *)hexIV
 {
     //Encryption will use AES, key size 256bit (32 bytes), iv size 128 bit (16 bytes), CBC Mode, PKCS7 Padding.
-    [Encryptor checkKey:hexKey];
     
     // Fetch key data and put into C string array padded with \0
     char *keyPtr;
@@ -198,8 +242,6 @@
 
 + (NSString *)__decryptedData:(NSString*)hexStr WithHexKey:(NSString*)hexKey hexIV:(NSString *)hexIV
 {
-    [Encryptor checkKey:hexKey];
-    
     // Fetch key data and put into C string array padded with \0
     char *keyPtr;
     [Encryptor fillDataArray:&keyPtr length:kCCKeySizeAES256+1 usingHexString:hexKey];

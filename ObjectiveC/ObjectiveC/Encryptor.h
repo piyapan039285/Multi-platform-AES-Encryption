@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CommonCrypto/CommonDigest.h>
 #import <CommonCrypto/CommonCryptor.h>
+#import <CommonCrypto/CommonHMAC.h>
 
 @interface Encryptor : NSObject
 + (NSString *)dataTohexString:(NSData *)data;

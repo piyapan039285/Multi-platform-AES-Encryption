@@ -13,3 +13,4 @@
 #endif /* CommonCryptor_Bridging_Header_h */
 
 #import <CommonCrypto/CommonCryptor.h>
+#import <CommonCrypto/CommonHMAC.h>

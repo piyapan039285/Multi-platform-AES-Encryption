@@ -74,6 +74,8 @@ class Encryption: NSObject
     
     class func encryptData(plainText:String, hexKey:String) throws -> String?
     {
+        try checkKey(hexString: hexKey)
+        
         //generate random IV (16 bytes)
         let hexIV:String = generateRandomHex(bytelength: 16);
         
@@ -84,8 +86,10 @@ class Encryption: NSObject
         
         if (cipherHexStr != "")
         {
-            //concat IV with cipherHexStr.
-            let encryptedHexStr:String = hexIV + cipherHexStr
+            let hmacHexKey:String = generateRandomHex(bytelength: 16);
+            let hmacHexStr:String = __computeHMAC(hexIV: hexIV, cipherHexStr: cipherHexStr, hexKey: hexKey, hmacHexKey: hmacHexKey)
+            
+            let encryptedHexStr:String = hexIV + hmacHexKey + hmacHexStr + cipherHexStr
             
             return encryptedHexStr;
         }
@@ -97,17 +101,33 @@ class Encryption: NSObject
     
     class func decryptData(hexStr:String, hexKey:String) throws -> String?
     {
-        //get IV from first 16 bytes (16 bytes = 32 hex characters)
-        let index32th = hexStr.index(hexStr.startIndex, offsetBy: 32);
-        let hexIV:String = hexStr.substring(to: index32th)
+        try checkKey(hexString: hexKey)
         
-        //get encryptedStr from 16th bytes to the end.
-        let encryptedStr:String = hexStr.substring(from: index32th)
+        var plainText:String? = nil;
         
-        let decryptedStr:String = try __decryptData(hexStr: encryptedStr, hexKey: hexKey, hexIV: hexIV)
-        let data:Data = try dataFromHexString(hexString: decryptedStr)
+        if(hexStr.characters.count > 128)
+        {
+            let index32th = hexStr.index(hexStr.startIndex, offsetBy: 32);
+            let hexIV:String = hexStr.substring(to: index32th)
+            
+            let index64th = hexStr.index(hexStr.startIndex, offsetBy:64);
+            let hmacHexKey:String = hexStr.substring(with: index32th..<index64th)
+            
+            let index128th = hexStr.index(hexStr.startIndex, offsetBy:128);
+            let hmacHexStr:String = hexStr.substring(with: index64th..<index128th)
+            
+            let cipherHexStr:String = hexStr.substring(from: index128th)
         
-        let plainText:String? = String.init(data: data, encoding: String.Encoding.utf8)
+            let computedHmacHexStr:String = __computeHMAC(hexIV: hexIV, cipherHexStr: cipherHexStr, hexKey: hexKey, hmacHexKey: hmacHexKey)
+            
+            if(computedHmacHexStr.lowercased() == hmacHexStr.lowercased())
+            {
+                let decryptedStr:String = try __decryptData(hexStr: cipherHexStr, hexKey: hexKey, hexIV: hexIV)
+                let data:Data = try dataFromHexString(hexString: decryptedStr)
+                
+                plainText = String.init(data: data, encoding: String.Encoding.utf8)
+            }
+        }
         
         return plainText
     }
@@ -138,10 +158,39 @@ class Encryption: NSObject
         }
     }
     
+    private class func __computeHMAC(hexIV:String, cipherHexStr:String, hexKey:String, hmacHexKey:String) -> String
+    {
+        var hexKey = hexKey.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        hexKey = hexKey.replacingOccurrences(of: " ", with: "")
+        hexKey = hexKey.lowercased();
+        
+        let hmacHexKey = hmacHexKey.lowercased();
+        
+        var hexString:String = hexIV + cipherHexStr + hexKey;
+        hexString = hexString.lowercased();
+        
+        let keyBytes = hmacHexKey.cString(using: String.Encoding.utf8)
+        let keyLen = Int(hmacHexKey.lengthOfBytes(using: String.Encoding.utf8))
+        let data = hexString.cString(using: String.Encoding.utf8)
+        let dataLen = Int(hexString.lengthOfBytes(using: String.Encoding.utf8))
+        let digestLen = Int(CC_SHA256_DIGEST_LENGTH)
+        let result = UnsafeMutablePointer<CUnsignedChar>.allocate(capacity: digestLen)
+        
+        CCHmac(CCHmacAlgorithm(kCCHmacAlgSHA256), keyBytes, keyLen, data, dataLen, result);
+        
+        let hash = NSMutableString()
+        for i in 0..<digestLen {
+            hash.appendFormat("%02x", result[i])
+        }
+        let hmacHexStr = hash as String;
+        
+        result.deallocate(capacity: digestLen)
+        
+        return hmacHexStr
+    }
+    
     private class func __encryptData(hexStr: String, hexKey:String, hexIV:String) throws -> String
     {
-        try checkKey(hexString: hexKey)
-        
         let data:Data = try dataFromHexString(hexString: hexStr);
         let key:Data = try dataFromHexString(hexString: hexKey);
         let iv:Data = try dataFromHexString(hexString: hexIV);
@@ -184,8 +233,6 @@ class Encryption: NSObject
     
     private class func __decryptData(hexStr: String, hexKey:String, hexIV:String) throws -> String
     {
-        try checkKey(hexString: hexKey)
-        
         let data:Data = try dataFromHexString(hexString: hexStr);
         let key:Data = try dataFromHexString(hexString: hexKey);
         let iv:Data = try dataFromHexString(hexString: hexIV);
