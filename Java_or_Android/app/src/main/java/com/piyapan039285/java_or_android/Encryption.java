@@ -6,6 +6,7 @@ import java.security.GeneralSecurityException;
 import java.util.Random;
 
 import javax.crypto.Cipher;
+import javax.crypto.Mac;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -72,6 +73,8 @@ public class Encryption
 
     public static String encryptData(String text, String hexKey) throws Exception
     {
+        checkKey(hexKey);
+
         //generate random IV (16 bytes)
         String hexIV = generateRandomHex(16);
 
@@ -81,20 +84,35 @@ public class Encryption
 
         String cipherHexStr = __encryptData(hexStr, hexKey, hexIV);
 
-        //concat IV with cipherHexStr.
-        String encryptedHexStr = hexIV + cipherHexStr;
+        String hmacHexKey = generateRandomHex(16);
+        String hmacHexStr = Encryption.__computeHMAC(hexIV, cipherHexStr, hexKey, hmacHexKey);
+
+        String encryptedHexStr = hexIV + hmacHexKey + hmacHexStr + cipherHexStr;
         return encryptedHexStr;
     }
 
     public static String decryptData(String hexStr, String hexKey) throws Exception
     {
-        String hexIV = hexStr.substring(0, 32);
-        String encryptedStr = hexStr.substring(32);
+        checkKey(hexKey);
 
-        String decryptedStr = __decryptData(encryptedStr, hexKey, hexIV);
+        String plainText = null;
+        if (hexStr.length() > 128)
+        {
+            String hexIV = hexStr.substring(0, 32);
+            String hmacHexKey = hexStr.substring(32, 64);
+            String hmacHexStr = hexStr.substring(64, 128);
+            String cipherHexStr = hexStr.substring(128);
 
-        byte[] data = dataFromHexString(decryptedStr);
-        String plainText = new String(data, Charset.forName("UTF-8"));
+            String computedHmacHexStr = Encryption.__computeHMAC(hexIV, cipherHexStr, hexKey, hmacHexKey);
+
+            if (computedHmacHexStr.equalsIgnoreCase(hmacHexStr))
+            {
+                String decryptedStr = __decryptData(cipherHexStr, hexKey, hexIV);
+
+                byte[] data = dataFromHexString(decryptedStr);
+                plainText = new String(data, Charset.forName("UTF-8"));
+            }
+        }
 
         return plainText;
     }
@@ -120,10 +138,32 @@ public class Encryption
         }
     }
 
+    private static String __computeHMAC(String hexIV, String cipherHexStr, String hexKey, String hmacHexKey) throws Exception
+    {
+        hexKey = hexKey.trim();
+        hexKey = hexKey.replaceAll("[ ]", "");
+        hexKey = hexKey.toLowerCase();
+
+        hmacHexKey = hmacHexKey.toLowerCase();
+
+        String hexString = hexIV + cipherHexStr + hexKey;
+        hexString = hexString.toLowerCase();
+
+        byte[] data = hexString.getBytes(Charset.forName("UTF-8"));
+        byte[] hmacKey = hmacHexKey.getBytes(Charset.forName("UTF-8"));
+
+        Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
+        SecretKeySpec secret_key = new SecretKeySpec(hmacKey, "HmacSHA256");
+        sha256_HMAC.init(secret_key);
+
+        byte[] hashbytes = sha256_HMAC.doFinal(data);
+        String hashHexStr = Encryption.dataToHexString(hashbytes);
+
+        return hashHexStr;
+    }
+
     private static String __encryptData(String hexString, String hexKey, String hexIV) throws Exception
     {
-        checkKey(hexKey);
-
         byte[] data = dataFromHexString(hexString);
         byte[] keyBytes = dataFromHexString(hexKey);
         byte[] iv = dataFromHexString(hexIV);
@@ -142,8 +182,6 @@ public class Encryption
 
     private static String __decryptData(String hexString, String hexKey, String hexIV) throws Exception
     {
-        checkKey(hexKey);
-
         byte[] data = dataFromHexString(hexString);
         byte[] keyBytes = dataFromHexString(hexKey);
         byte[] iv = dataFromHexString(hexIV);

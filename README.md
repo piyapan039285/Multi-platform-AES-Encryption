@@ -1,5 +1,5 @@
 # Multi-platform-AES-Encryption
-Ready-To-Use AES-256 bit encryption library. Encryption method is AES with CBC mode (random IV in each encryption) and PCKS7 padding (aka. PCKS5). [View Demo](https://firebasestorage.googleapis.com/v0/b/multi-platform-aes-encryption.appspot.com/o/demo.html?alt=media&token=f7ccb12a-acc7-4b86-b07f-bf099f6323d2)
+Ready-To-Use AES-256 bit encryption library. Encryption method is AES with CBC mode (random IV in each encryption), PCKS7 padding (aka. PCKS5), and HMAC-256 authentication. [View Demo](https://firebasestorage.googleapis.com/v0/b/multi-platform-aes-encryption.appspot.com/o/demo.html?alt=media&token=f7ccb12a-acc7-4b86-b07f-bf099f6323d2)
 
 ## Language Supported
 * C#
@@ -15,6 +15,8 @@ Ready-To-Use AES-256 bit encryption library. Encryption method is AES with CBC m
 
 ## Output
 * **encrypted_string** (string) : string in hexadecimal format.
+
+**Note** : ```decryption``` method will ouput ```null``` if you pass wrong key.
 
 <br/>
 <br/>
@@ -81,7 +83,7 @@ NSString *decryptedText = [Encryptor decryptedData:encryptedText WithHexKey:key]
 * Class : ```Swift\Swift3.1\Swift3.1\Encryption.swift```
 * Unit Test : ```Swift\Swift3.1\EncryptionTests\EncryptionTests.swift```
 
-**Important** : To use in your project, you have to add ```Security.framework``` library and add ```#import <CommonCrypto/CommonCryptor.h>``` to the bridging header as shown in image below (More info : http://www.learnswiftonline.com/getting-started/adding-swift-bridging-header/) 
+**Important** : To use in your project, you have to add ```Security.framework``` library and add ```#import <CommonCrypto/CommonCryptor.h>```, ```#import <CommonCrypto/CommonHMAC.h>``` to the bridging header as shown in image below (More info : http://www.learnswiftonline.com/getting-started/adding-swift-bridging-header/) 
 
 ![](/Swift/images/bridging_header.png)
 <br/>

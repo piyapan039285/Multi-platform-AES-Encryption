@@ -68,30 +68,65 @@ var encryptor = {
 
     'encryptData': function(plainText, hexKey)
     {
+        this._checkKey(hexKey);
+
         var hexIV = this.generateRandomHex(16);
         var hexString = this._dataToHexString(forge.util.encodeUtf8(plainText));
 
         var cipherHexStr = this._encryptData(hexString, hexKey, hexIV);
-        var encryptData = hexIV + cipherHexStr;
 
+        var hmacHexKey = this.generateRandomHex(16);
+        var hmacHexStr = this._computeHMAC(hexIV, cipherHexStr, hexKey, hmacHexKey);
+
+        var encryptData = hexIV + hmacHexKey + hmacHexStr + cipherHexStr;
         return encryptData;
     },
 
     'decryptData': function(hexStr, hexKey)
     {
-        var hexIV = hexStr.substr(0, 32);
-        var encryptedStr = hexStr.substr(32);
+        this._checkKey(hexKey);
+        var plainText = null;
 
-        var decryptedStr = this._decryptData(encryptedStr, hexKey, hexIV);
-        var plainText = forge.util.decodeUtf8(forge.util.hexToBytes(decryptedStr));
-        
+        if (hexStr.length > 128)
+        {
+            var hexIV = hexStr.substr(0, 32);
+            var hmacHexKey = hexStr.substr(32, 32);
+            var hmacHexStr = hexStr.substr(64, 64);
+            var cipherHexStr = hexStr.substr(128);
+
+            var computedHmacHexStr = this._computeHMAC(hexIV, cipherHexStr, hexKey, hmacHexKey);
+
+            if (computedHmacHexStr.toLowerCase() == hmacHexStr.toLowerCase())
+            {
+                var decryptedStr = this._decryptData(cipherHexStr, hexKey, hexIV);
+                plainText = forge.util.decodeUtf8(forge.util.hexToBytes(decryptedStr));
+            }
+        }
+
         return plainText;
+    },
+
+    '_computeHMAC': function(hexIV, cipherHexStr, hexKey, hmacHexKey)
+    {
+        hexKey = hexKey.trim();
+        hexKey = hexKey.replace(new RegExp(' ', 'g'), '');
+        hexKey = hexKey.toLowerCase();
+
+        hmacHexKey = hmacHexKey.toLowerCase();
+
+        var hexString = hexIV + cipherHexStr + hexKey;
+        hexString = hexString.toLowerCase();
+
+        var hmac = forge.hmac.create();
+        hmac.start('sha256', hmacHexKey);
+        hmac.update(hexString);
+
+        var hashHexStr = hmac.digest().toHex();
+        return hashHexStr;
     },
 
     '_encryptData': function(hexString, hexKey, hexIV)
     {
-        this._checkKey(hexKey);
-
         var data = this._dataFromHexString(hexString);
         var key = this._dataFromHexString(hexKey);
         var iv = this._dataFromHexString(hexIV);
@@ -109,8 +144,6 @@ var encryptor = {
 
     '_decryptData': function(hexString, hexKey, hexIV)
     {
-        this._checkKey(hexKey);
-
         var data = this._dataFromHexString(hexString);
         var key = this._dataFromHexString(hexKey);
         var iv = this._dataFromHexString(hexIV);

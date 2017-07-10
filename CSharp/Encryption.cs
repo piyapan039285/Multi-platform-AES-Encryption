@@ -53,29 +53,46 @@ namespace AES
 
         public static string encryptData(string text, string hexKey)
         {
+            checkKey(hexKey);
+
             //generate random IV (16 bytes)
             string hexIV = generateRandomHex(16);
-
+            
             //convert plainText to hex string.
             byte[] bytesData = System.Text.Encoding.UTF8.GetBytes(text);
             string hexStr = dataToHexString(bytesData);
 
             string cipherHexStr = __encryptData(hexStr, hexKey, hexIV);
 
-            //concat IV with cipherHexStr.
-            string encryptedHexStr = hexIV + cipherHexStr;
+            string hmacHexKey = generateRandomHex(16);
+            string hmacHexStr = Encryption.__computeHMAC(hexIV, cipherHexStr, hexKey, hmacHexKey);
+
+            string encryptedHexStr = hexIV + hmacHexKey + hmacHexStr + cipherHexStr;
             return encryptedHexStr;
         }
 
         public static string decryptData(string hexStr, string hexKey)
         {
-            string hexIV = hexStr.Substring(0, 32);
-            string encryptedStr = hexStr.Substring(32);
+            checkKey(hexKey);
+            string plainText = null;
 
-            string decryptedStr = __decryptData(encryptedStr, hexKey, hexIV);
+            if (hexStr.Length > 128)
+            {
+                string hexIV = hexStr.Substring(0, 32);
+                string hmacHexKey = hexStr.Substring(32, 32);
+                string hmacHexStr = hexStr.Substring(64, 64);
+                string cipherHexStr = hexStr.Substring(128);
 
-            byte[] data = dataFromHexString(decryptedStr);
-            string plainText = System.Text.Encoding.UTF8.GetString(data);
+                string computedHmacHexStr = Encryption.__computeHMAC(hexIV, cipherHexStr, hexKey, hmacHexKey);
+
+                if (computedHmacHexStr.ToLower() == hmacHexStr.ToLower())
+                {
+                    string decryptedStr = __decryptData(cipherHexStr, hexKey, hexIV);
+
+                    byte[] data = dataFromHexString(decryptedStr);
+                    plainText = System.Text.Encoding.UTF8.GetString(data);
+                }
+            }
 
             return plainText;
         }
@@ -101,10 +118,29 @@ namespace AES
             }
         }
 
+        private static string __computeHMAC(string hexIV, string cipherHexStr, string hexKey, string hmacHexKey)
+        {
+            hexKey = hexKey.Trim();
+            hexKey = hexKey.Replace(" ", "");
+            hexKey = hexKey.ToLower();
+
+            hmacHexKey = hmacHexKey.ToLower();
+
+            string hexString = hexIV + cipherHexStr + hexKey;
+            hexString = hexString.ToLower();
+
+            byte[] data = System.Text.Encoding.UTF8.GetBytes(hexString);
+            byte[] hmacKey = System.Text.Encoding.UTF8.GetBytes(hmacHexKey);
+
+            HMACSHA256 hmac = new HMACSHA256(hmacKey);
+            byte[] hashbytes = hmac.ComputeHash(data);
+            string hashHexStr = Encryption.dataToHexString(hashbytes);
+
+            return hashHexStr;
+        }
+
         public static string __encryptData(string hexString, string hexKey, string hexIV)
         {
-            checkKey(hexKey);
-
             byte[] data = dataFromHexString(hexString);
             byte[] key = dataFromHexString(hexKey);
             byte[] iv = dataFromHexString(hexIV);
@@ -127,8 +163,6 @@ namespace AES
 
         private static string __decryptData(string hexString, string hexKey, string hexIV)
         {
-            checkKey(hexKey);
-
             byte[] data = dataFromHexString(hexString);
             byte[] key = dataFromHexString(hexKey);
             byte[] iv = dataFromHexString(hexIV);
