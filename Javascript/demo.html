@@ -37,6 +37,7 @@
     <div> 
         Key :
         <input id="txtKey" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" value="4452d71687b6bc2c9389c3349fdc17fb3dfbba6224affb7676e1337926cdd602"></input>
+        <button id="btnRandomKey">random key</button>
     </div>
 
     <div>
@@ -46,11 +47,13 @@
             <option value="dec">Decryption</option>
         </select>
         &nbsp;&nbsp;
-        <button id="btnOK">encrypt</button>        
+        <button id="btnOK">encrypt</button>                     
     </div>
     
     <h2> Output </h2>
     <textarea id="txtOutput" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+
+    <button id="btnSwitchMode">switch mode</button>   
 
     <script>
         var selectMode = document.getElementById("selectMode");
@@ -58,6 +61,8 @@
         var txtKey = document.getElementById("txtKey");
         var txtOutput = document.getElementById("txtOutput");
         var btnOK = document.getElementById("btnOK");
+        var btnRandomKey = document.getElementById("btnRandomKey");
+        var btnSwitchMode = document.getElementById("btnSwitchMode");
 
         var process = function()
         {
@@ -81,7 +86,7 @@
             }
 
             if(output == null)
-                output = "-- output is null, please check if key is correct --";
+                output = "-- output is null, please check if input and key are correct --";
 
             txtOutput.value = output; 
         };
@@ -96,6 +101,29 @@
                 btnOK.innerHTML = "decrypt";
 
             process();
+        };
+
+        btnRandomKey.onclick = function()
+        {
+            var hexKey = encryptor.generateRandomHex(32);
+            txtKey.value = hexKey;
+
+            process();
+        };
+
+        btnSwitchMode.onclick = function()
+        {
+            var data = txtInput.value;
+            var output = txtOutput.value;
+
+            txtInput.value = output;
+
+            if(selectMode.value == "dec")
+                selectMode.value = "enc";
+            else
+                selectMode.value = "dec";
+
+            selectMode.onchange();
         };
 
         txtInput.addEventListener('input', process); 
