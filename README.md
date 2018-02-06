@@ -83,7 +83,7 @@ NSString *decryptedText = [Encryptor decryptedData:encryptedText WithHexKey:key]
 * Class : ```Swift\Swift3.1\Swift3.1\Encryption.swift```
 * Unit Test : ```Swift\Swift3.1\EncryptionTests\EncryptionTests.swift```
 
-**Important** : To use in your project, you have to add ```Security.framework``` library and add ```#import <CommonCrypto/CommonCryptor.h>```, ```#import <CommonCrypto/CommonHMAC.h>``` to the bridging header as shown in image below (More info : http://www.learnswiftonline.com/getting-started/adding-swift-bridging-header/) 
+**Important** : To use in your project, you have to add ```Security.framework``` library and add ```#import <CommonCrypto/CommonCryptor.h>```, ```#import <CommonCrypto/CommonHMAC.h>``` to the bridging header as shown in image below (More info : [here](https://stackoverflow.com/questions/37268368/swift-bridging-header-file-wont-work?answertab=votes#tab-top)) 
 
 ![](/Swift/images/bridging_header.png)
 <br/>
