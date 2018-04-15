@@ -1,5 +1,7 @@
 # Multi-platform-AES-Encryption
-Ready-To-Use AES-256 bit encryption library. Encryption method is AES with CBC mode (random IV in each encryption), PCKS7 padding (aka. PCKS5), and HMAC-256 authentication. [View Demo](https://firebasestorage.googleapis.com/v0/b/multi-platform-aes-encryption.appspot.com/o/demo.html?alt=media&token=051a8034-ff34-47ce-82f4-2e0f30880ecb)
+Ready-To-Use AES-256 bit encryption library which **can encrypt/decrypt across platform**. ie. Encrypt using Java and decrypt using Swift. [View Demo](https://firebasestorage.googleapis.com/v0/b/multi-platform-aes-encryption.appspot.com/o/demo.html?alt=media&token=051a8034-ff34-47ce-82f4-2e0f30880ecb)
+
+Encryption method is AES with CBC mode (random IV in each encryption), PCKS7 padding (aka. PCKS5), and HMAC-256 authentication.
 
 ## Language Supported
 * C#
