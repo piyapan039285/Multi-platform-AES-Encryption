@@ -1,5 +1,5 @@
 # Multi-platform-AES-Encryption
-Ready-To-Use AES-256 bit encryption library which **support across platform**. For example, you can encrypt message using Java and decrypt it using Swift. [View Demo](https://firebasestorage.googleapis.com/v0/b/multi-platform-aes-encryption.appspot.com/o/demo.html?alt=media&token=051a8034-ff34-47ce-82f4-2e0f30880ecb)
+Ready-To-Use AES-256 bit encryption library which **supports across platforms**. For example, you can encrypt message using Java and decrypt it using Swift. [View Demo](https://firebasestorage.googleapis.com/v0/b/multi-platform-aes-encryption.appspot.com/o/demo.html?alt=media&token=051a8034-ff34-47ce-82f4-2e0f30880ecb)
 
 Encryption method is AES with CBC mode (random IV in each encryption), PCKS7 padding (aka. PCKS5), and HMAC-256 authentication.
 
