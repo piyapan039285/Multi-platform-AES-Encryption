@@ -7,7 +7,7 @@ Encryption method is AES with CBC mode (random IV in each encryption), PCKS7 pad
 * C#
 * Java (Android)
 * Objective-C
-* Swift 3, 4
+* Swift 3, 4, 5
 * NodeJS
 * Javascript (Tested on Chrome 59, Firefox 54, IE 10-11)
 
@@ -89,6 +89,10 @@ NSString *decryptedText = [Encryptor decryptedData:encryptedText WithHexKey:key]
 ### Swift 4
 * Class : ```Swift\Swift4\Encryption_Swift\Encryption.swift```
 * Unit Test : ```Swift\Swift4\EncryptionTests\EncryptionTests.swift```
+
+### Swift 5
+* Class : ```Swift\Swift5\Encryption_Swift\Encryption.swift```
+* Unit Test : ```Swift\Swift5\EncryptionTests\Encryption_SwiftTests.swift```
 
 **Important** : To use in your project, you have to add ```Security.framework``` library and add ```#import <CommonCrypto/CommonCryptor.h>```, ```#import <CommonCrypto/CommonHMAC.h>``` to the bridging header as shown in image below (More info : [here](https://stackoverflow.com/questions/37268368/swift-bridging-header-file-wont-work?answertab=votes#tab-top)) 
 
