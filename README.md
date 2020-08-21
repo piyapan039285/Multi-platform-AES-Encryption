@@ -137,6 +137,7 @@ var decryptedText = encryptor.decryptData(encryptedText, key);
 ```
 
 ## Python
+It is implemented based on [pycrypto](https://github.com/pycrypto/pycrypto) library.
 * Module : ```/Python/MultiPlatformAESEncryptionPython3.7/encryption.py```
 * Unit Test : ```/Python/MultiPlatformAESEncryptionPython3.7/unit_test.py```
 
