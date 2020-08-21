@@ -5,7 +5,7 @@ Encryption method is AES with CBC mode (random IV in each encryption), PCKS7 pad
 
 ## Language Supported
 * C#
-* Java (Android)
+* Java 8 (can be used with Android)
 * Objective-C
 * Swift 3, 4, 5
 * NodeJS
@@ -42,7 +42,7 @@ string encryptedText = AES.Encryption.encryptData(text, key);
 string decryptedText = AES.Encryption.decryptData(encryptedText, key);
 ```
 
-## Java, Android
+## Java
 * Class ```\Java_or_Android\app\src\main\java\com\piyapan039285\java_or_android\Encryption.java```
 * Unit Test ```\Java_or_Android\app\src\test\java\com\piyapan039285\java_or_android\AESUnitTest.java```
 
