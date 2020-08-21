@@ -26,6 +26,7 @@ Encryption method is AES with CBC mode (random IV in each encryption), PCKS7 pad
 
 # Sample Usage
 ## C#
+It is implemented based on .NET Framework 4.5. If you use windows 7, 8 you need to install from this [link](https://www.microsoft.com/en-us/download/details.aspx?id=30653)
 * Class : ```\CSharp\Encryption.cs```
 * Unit Test : ```\CSharp\AESUnitTest\UnitTest1.cs```
 
