@@ -37,12 +37,6 @@ def data_to_hex_string(data_bytes: bytes) -> str:
 
 
 def encrypt_data(plain_text: str, hex_key: str) -> str:
-    # PyCrypto does not have PKCS7 Padding alforithm, I have to implement on my own.
-    #
-    # Note: if plain_text length is multiple of 16,
-    #        then a sequence of value chr(BS) in length 16 will be appended to the origin data
-    plain_text = plain_text + chr(16 - len(plain_text) % 16) * (16 - len(plain_text) % 16)
-
     _check_key(hex_key)
 
     # generate random IV (16 bytes)
@@ -74,13 +68,7 @@ def decrypt_data(hex_str: str, hex_key: str) -> str:
         computed_hmac_hex_str = _compute_HMAC(hex_iv, cipher_hex_str, hex_key, hmac_hex_key)
         if computed_hmac_hex_str.lower() == hmac_hex_str.lower():
             decrypted_str = _decrypt_data(cipher_hex_str, hex_key, hex_iv)
-
             data = _data_from_hex_string(decrypted_str)
-
-            # PyCrypto does not have PKCS7 Padding alforithm, I have
-            #   to implement un-pad on my own.
-            data = data[:-ord(data[len(data) - 1:])]
-
             plain_text = data.decode('utf-8')
 
     return plain_text
@@ -124,6 +112,12 @@ def _encrypt_data(hex_string: str, hex_key: str, hex_iv: str) -> str:
     key = _data_from_hex_string(hex_key)
     iv = _data_from_hex_string(hex_iv)
 
+    # PyCrypto does not have PKCS7 Padding alforithm, I have to implement on my own.
+    #
+    # Note: if plain_text length is multiple of 16,
+    #        then a sequence of value chr(BS) in length 16 will be appended to the origin data
+    data = data + (chr(16 - len(data) % 16) * (16 - len(data) % 16)).encode('utf-8')
+
     cipher = AES.new(key, AES.MODE_CBC, iv)
     encrypted_data = cipher.encrypt(data)
     encrypted_hex_data = data_to_hex_string(encrypted_data)
@@ -137,6 +131,11 @@ def _decrypt_data(hex_string: str, hex_key: str, hex_iv: str) -> str:
 
     cipher = AES.new(key, AES.MODE_CBC, iv)
     decrypted_data = cipher.decrypt(data)
+
+    # PyCrypto does not have PKCS7 Padding alforithm, I have
+    #   to implement un-pad on my own.
+    decrypted_data = decrypted_data[:-ord(decrypted_data[len(decrypted_data) - 1:])]
+
     decrypted_hex_data = data_to_hex_string(decrypted_data)
     return decrypted_hex_data
 

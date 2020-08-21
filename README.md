@@ -9,6 +9,7 @@ Encryption method is AES with CBC mode (random IV in each encryption), PCKS7 pad
 * Objective-C
 * Swift 3, 4, 5
 * NodeJS
+* Python 3.7
 * Javascript (Tested on Chrome 59, Firefox 54, IE 10-11)
 
 ## Input
@@ -133,6 +134,26 @@ var key = "44 52 d7 16 87 b6 bc 2c 93 89 c3 34 9f dc 17 fb 3d fb ba 62 24 af fb 
 
 var encryptedText = encryptor.encryptData(text, key);
 var decryptedText = encryptor.decryptData(encryptedText, key);
+```
+
+## Python
+* Module : ```/Python/MultiPlatformAESEncryptionPython3.7/encryption.py```
+* Unit Test : ```/Python/MultiPlatformAESEncryptionPython3.7/unit_test.py```
+
+<br/>
+
+**Example**
+<br/>
+
+
+```python
+from encryption import encrypt_data, decrypt_data
+
+text = "  Hello World  "
+key = "44 52 d7 16 87 b6 bc 2c 93 89 c3 34 9f dc 17 fb 3d fb ba 62 24 af fb 76 76 e1 33 79 26 cd d6 02"
+
+encrypted_text = encrypt_data(text, key)
+decrypted_text = decrypt_data(encrypted_text, key)
 ```
 
 ## Javascript
