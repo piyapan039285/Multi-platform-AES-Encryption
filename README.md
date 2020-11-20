@@ -4,7 +4,7 @@ Ready-To-Use AES-256 bit encryption library which **supports across platforms**.
 Encryption method is AES with CBC mode (random IV in each encryption), PCKS7 padding (aka. PCKS5), and HMAC-256 authentication.
 
 ## Language Supported
-* C#
+* C# (.NET Framework 4.5)
 * Java 8 (can be used with Android), Java 11
 * Objective-C
 * Swift 3, 4, 5
@@ -26,19 +26,18 @@ Encryption method is AES with CBC mode (random IV in each encryption), PCKS7 pad
 
 # Sample Usage
 ## C#
-It is implemented based on .NET Framework 4.5. If you use windows 7, 8 you need to install from this [link](https://www.microsoft.com/en-us/download/details.aspx?id=30653)
-* Class : ```\CSharp\Encryption.cs```
-* Unit Test : ```\CSharp\AESUnitTest\UnitTest1.cs```
+**Installation**
+ 1. If you use windows 7, 8 you need to install .NET Framework 4.5 from this [link](https://www.microsoft.com/en-us/download/details.aspx?id=30653)
+ 1. Create .NET Framework 4.5 Project in Visual Studio.
+ 1. copy `\CSharp\Encryption.cs` to your C# project.
+ 1. build project.
 
 <br/>
-
-**Installation**
- 1. copy `\CSharp\Encryption.cs` to your project.
- 1. build project.
 
 **Example**
 <br/>
 
+See more example at file ```\CSharp\AESUnitTest\UnitTest1.cs```
 ```csharp
 string text = "  Hello World  ";
 string key = "44 52 d7 16 87 b6 bc 2c 93 89 c3 34 9f dc 17 fb 3d fb ba 62 24 af fb 76 76 e1 33 79 26 cd d6 02";
@@ -48,19 +47,6 @@ string decryptedText = AES.Encryption.decryptData(encryptedText, key);
 ```
 
 ## Java
-* Java 8
-  * Class ```\Java_or_Android\app\src\main\java\com\piyapan039285\java_or_android\Encryption.java```
-  * Unit Test ```\Java_or_Android\app\src\test\java\com\piyapan039285\java_or_android\AESUnitTest.java```
-* Java 11
-  * Class ```/Java11/src/main/java/com/piyapan039285/Encryption.java```
-  * Unit Test ```/Java11/src/test/java/com/piyapan039285/AESUnitTest.java```
-
-
-**Important** : For Java 8, If you want to run unit test, you have to download "unlimited strength file" (link below). Then, install file to ${java.home}/jre/lib/security/. In Android Studio, you can find JDK path from ```Files -> Project Structure -> SDK Location.```
-* unlimited strength file - Java 8 : http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html
-
-<br/>
-
 **Installation**
  1. copy file to project
     * Java 8: `\Java_or_Android\app\src\main\java\com\piyapan039285\java_or_android\Encryption.java`
@@ -69,7 +55,9 @@ string decryptedText = AES.Encryption.decryptData(encryptedText, key);
 
 **Example**
 <br/>
-
+See more example at this file
+  * java 8: ```\Java_or_Android\app\src\test\java\com\piyapan039285\java_or_android\AESUnitTest.java```
+  * Java 11: ```/Java11/src/test/java/com/piyapan039285/AESUnitTest.java```
 
 ```java
 String text = "  Hello World  ";
@@ -79,19 +67,18 @@ String encryptedText = Encryption.encryptData(text, key);
 String decryptedText = Encryption.decryptData(encryptedText, key);
 ```
 
+Note: For Java 8, If you want to run unit test, you have to download "unlimited strength file" (link below). Then, install file to ${java.home}/jre/lib/security/. In Android Studio, you can find JDK path from ```Files -> Project Structure -> SDK Location.```
+* unlimited strength file - Java 8 : http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html
+
+
 ## Objective C
-* Class : ```\ObjectiveC\ObjectiveC\Encryptor.m```, ```\ObjectiveC\ObjectiveC\Encryptor.h```
-* Unit Test : ```\ObjectiveC\EncryptionTests\EncryptionTests.m```
-
-<br/>
-
 **Installation**
  1. copy ```\ObjectiveC\ObjectiveC\Encryptor.m```, ```\ObjectiveC\ObjectiveC\Encryptor.h``` to your project.
  1. build project.
 
 **Example**
 <br/>
-
+See more example at ```\ObjectiveC\EncryptionTests\EncryptionTests.m```
 
 ```objectivec
 NSString *text = @"  Hello World  ";
@@ -102,18 +89,6 @@ NSString *decryptedText = [Encryptor decryptedData:encryptedText WithHexKey:key]
 ```
 
 ## Swift
-### Swift 3
-* Class : ```Swift\Swift3.1\Swift3.1\Encryption.swift```
-* Unit Test : ```Swift\Swift3.1\EncryptionTests\EncryptionTests.swift```
-
-### Swift 4
-* Class : ```Swift\Swift4\Encryption_Swift\Encryption.swift```
-* Unit Test : ```Swift\Swift4\EncryptionTests\EncryptionTests.swift```
-
-### Swift 5
-* Class : ```Swift\Swift5\Encryption_Swift\Encryption.swift```
-* Unit Test : ```Swift\Swift5\EncryptionTests\Encryption_SwiftTests.swift```
-
 **Installation**
  1. copy file to project
     * swift 3: ```Swift\Swift3.1\Swift3.1\Encryption.swift```
@@ -131,6 +106,10 @@ NSString *decryptedText = [Encryptor decryptedData:encryptedText WithHexKey:key]
 **Example**
 <br/>
 
+See more example at this file
+  * Swift 3: ```Swift\Swift3.1\EncryptionTests\EncryptionTests.swift```
+  * Swift 4: ```Swift\Swift4\EncryptionTests\EncryptionTests.swift```
+  * Swift 5: ```Swift\Swift5\EncryptionTests\Encryption_SwiftTests.swift```
 
 ```swift
 let text:String = "  Hello World  ";
@@ -141,11 +120,6 @@ let decryptedText:String? = Encryption.decryptData(hexStr: encryptedText!, hexKe
 ```
 
 ## NodeJS
-* Module : ```\NodeJS\encryption.js```
-* Unit Test : ```\NodeJS\unitTest.js```
-
-<br/>
-
 **Installation**
  1. copy ```\NodeJS\encryption.js``` to your project.
  1. build project.
@@ -153,6 +127,7 @@ let decryptedText:String? = Encryption.decryptData(hexStr: encryptedText!, hexKe
 **Example**
 <br/>
 
+See more example at ```\NodeJS\unitTest.js```
 
 ```js
 var encryptor = require("./encryption");
@@ -165,19 +140,13 @@ var decryptedText = encryptor.decryptData(encryptedText, key);
 ```
 
 ## Python
-It is implemented based on [pycrypto](https://github.com/pycrypto/pycrypto) library.
-* Module : ```/Python/MultiPlatformAESEncryptionPython3.7/encryption.py```
-* Unit Test : ```/Python/MultiPlatformAESEncryptionPython3.7/unit_test.py```
-
-<br/>
-
 **Installation**
+ 1. add `pycrypto==2.6.1` to requirements.txt file. Then, run `pip install -r requirements.txt`
  1. copy ```/Python/MultiPlatformAESEncryptionPython3.7/encryption.py``` to your project.
- 1. build project.
 
 **Example**
 <br/>
-
+See more example at ```/Python/MultiPlatformAESEncryptionPython3.7/unit_test.py```
 
 ```python
 from encryption import encrypt_data, decrypt_data
@@ -190,19 +159,17 @@ decrypted_text = decrypt_data(encrypted_text, key)
 ```
 
 ## Javascript
-It is implemented based on [forge](https://github.com/digitalbazaar/forge) API.
-* Javascript file : ```javascript\encryption.js```
-* Unit Test :  ```javascript\unitTest.html```
-
-<br/>
-
 **Installation**
- 1. copy ```javascript\encryption.js``` to your project.
- 1. build project.
+ 1. copy ```javascript\encryption.js```, ```javascript\forge.min.js``` to your project.
+ 1. add script section in your html file. 
+ ```
+  <script src="forge.min.js"></script>
+  <script src="encryption.js"></script>
+ ```
 
 **Example**
 <br/>
-
+See more example at ```javascript\unitTest.html```
 
 ```xml
 <html>
