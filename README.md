@@ -5,7 +5,7 @@ Encryption method is AES with CBC mode (random IV in each encryption), PCKS7 pad
 
 ## Language Supported
 * C#
-* Java 8 (can be used with Android)
+* Java 8 (can be used with Android), Java 11
 * Objective-C
 * Swift 3, 4, 5
 * NodeJS
@@ -32,6 +32,10 @@ It is implemented based on .NET Framework 4.5. If you use windows 7, 8 you need 
 
 <br/>
 
+**Installation**
+ 1. copy `\CSharp\Encryption.cs` to your project.
+ 1. build project.
+
 **Example**
 <br/>
 
@@ -44,14 +48,24 @@ string decryptedText = AES.Encryption.decryptData(encryptedText, key);
 ```
 
 ## Java
-* Class ```\Java_or_Android\app\src\main\java\com\piyapan039285\java_or_android\Encryption.java```
-* Unit Test ```\Java_or_Android\app\src\test\java\com\piyapan039285\java_or_android\AESUnitTest.java```
+* Java 8
+  * Class ```\Java_or_Android\app\src\main\java\com\piyapan039285\java_or_android\Encryption.java```
+  * Unit Test ```\Java_or_Android\app\src\test\java\com\piyapan039285\java_or_android\AESUnitTest.java```
+* Java 11
+  * Class ```/Java11/src/main/java/com/piyapan039285/Encryption.java```
+  * Unit Test ```/Java11/src/test/java/com/piyapan039285/AESUnitTest.java```
 
-**Important** : If you want to run unit test, you have to download "unlimited strength file" (link below). Then, install file to ${java.home}/jre/lib/security/. In Android Studio, you can find JDK path from ```Files -> Project Structure -> SDK Location.```
-* unlimited strength file - Java 7 : http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html
+
+**Important** : For Java 8, If you want to run unit test, you have to download "unlimited strength file" (link below). Then, install file to ${java.home}/jre/lib/security/. In Android Studio, you can find JDK path from ```Files -> Project Structure -> SDK Location.```
 * unlimited strength file - Java 8 : http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html
 
 <br/>
+
+**Installation**
+ 1. copy file to project
+    * Java 8: `\Java_or_Android\app\src\main\java\com\piyapan039285\java_or_android\Encryption.java`
+    * Java 11: `/Java11/src/main/java/com/piyapan039285/Encryption.java`
+ 1. build project.
 
 **Example**
 <br/>
@@ -70,6 +84,10 @@ String decryptedText = Encryption.decryptData(encryptedText, key);
 * Unit Test : ```\ObjectiveC\EncryptionTests\EncryptionTests.m```
 
 <br/>
+
+**Installation**
+ 1. copy ```\ObjectiveC\ObjectiveC\Encryptor.m```, ```\ObjectiveC\ObjectiveC\Encryptor.h``` to your project.
+ 1. build project.
 
 **Example**
 <br/>
@@ -96,7 +114,12 @@ NSString *decryptedText = [Encryptor decryptedData:encryptedText WithHexKey:key]
 * Class : ```Swift\Swift5\Encryption_Swift\Encryption.swift```
 * Unit Test : ```Swift\Swift5\EncryptionTests\Encryption_SwiftTests.swift```
 
-**Important** : To use in your project, you have to add ```Security.framework``` library and add ```#import <CommonCrypto/CommonCryptor.h>```, ```#import <CommonCrypto/CommonHMAC.h>``` to the bridging header as shown in image below (More info : [here](https://stackoverflow.com/questions/37268368/swift-bridging-header-file-wont-work?answertab=votes#tab-top)) 
+**Installation**
+ 1. copy file to project
+    * swift 3: ```Swift\Swift3.1\Swift3.1\Encryption.swift```
+    * swift 4: ```Swift\Swift4\Encryption_Swift\Encryption.swift``` 
+    * swift 5: ```Swift\Swift5\Encryption_Swift\Encryption.swift```
+ 1. add ```Security.framework``` library and add ```#import <CommonCrypto/CommonCryptor.h>```, ```#import <CommonCrypto/CommonHMAC.h>``` to the bridging header as shown in image below (More info : [here](https://stackoverflow.com/questions/37268368/swift-bridging-header-file-wont-work?answertab=votes#tab-top)) 
 
 ![](/Swift/images/bridging_header.png)
 <br/>
@@ -123,6 +146,10 @@ let decryptedText:String? = Encryption.decryptData(hexStr: encryptedText!, hexKe
 
 <br/>
 
+**Installation**
+ 1. copy ```\NodeJS\encryption.js``` to your project.
+ 1. build project.
+
 **Example**
 <br/>
 
@@ -144,6 +171,10 @@ It is implemented based on [pycrypto](https://github.com/pycrypto/pycrypto) libr
 
 <br/>
 
+**Installation**
+ 1. copy ```/Python/MultiPlatformAESEncryptionPython3.7/encryption.py``` to your project.
+ 1. build project.
+
 **Example**
 <br/>
 
@@ -164,6 +195,10 @@ It is implemented based on [forge](https://github.com/digitalbazaar/forge) API.
 * Unit Test :  ```javascript\unitTest.html```
 
 <br/>
+
+**Installation**
+ 1. copy ```javascript\encryption.js``` to your project.
+ 1. build project.
 
 **Example**
 <br/>
